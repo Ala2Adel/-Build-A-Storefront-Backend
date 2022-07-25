@@ -1,84 +1,80 @@
-// import client from "../database";
+import client from "../database";
 
-// export type Order = {
-//     order_id?: number;
-//     order_date: Date,
-//     order_status: string,
-//     order_quantity: number;
-// };
+export type Order = {
+    order_id?: number;
+    order_status: string,
+    user_id: number;
+};
 
-// export class OrdersModel {
-//     async index(): Promise<Order[]> {
-//         try {
-//             const connection = await client.connect();
-//             const sqlQuery = 'SELECT * FROM orders';
-//             const result = await connection.query(sqlQuery);
-//             connection.release();
-//             return result.rows;
-//         } catch (error) {
-//             throw new Error(
-//                 `Cannot get orders & error = ${error}`
-//             );
-//         }
-//     }
+export class OrdersModel {
+    async index(): Promise<Order[]> {
+        try {
+            const connection = await client.connect();
+            const sqlQuery = 'SELECT * FROM orders';
+            const result = await connection.query(sqlQuery);
+            connection.release();
+            return result.rows;
+        } catch (error) {
+            throw new Error(
+                `Cannot get orders & error = ${error}`
+            );
+        }
+    }
 
-//     async show(order_id: number): Promise<Order[]> {
-//         try {
-//             const connection = await client.connect();
-//             const sqlQuery = 'SELECT * FROM orders WHERE order_id=($1)';
-//             const result = await connection.query(sqlQuery, [order_id]);
-//             connection.release();
-//             return result.rows[0];
-//         } catch (error) {
-//             throw new Error(
-//                 `Cannot get order of id ${order_id} & error = ${error}`
-//             );
-//         }
-//     }
+    async show(order_id: number): Promise<Order[]> {
+        try {
+            const connection = await client.connect();
+            const sqlQuery = 'SELECT * FROM orders WHERE order_id=($1)';
+            const result = await connection.query(sqlQuery, [order_id]);
+            connection.release();
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(
+                `Cannot get order of id ${order_id} & error = ${error}`
+            );
+        }
+    }
 
-//     async create(order: Order): Promise<Order> {
-//         try {
-//             const sqlQuery = `INSERT INTO orders (order_date, order_status, order_quantity) VALUES($1, $2, $3) RETURNING *`
+    async create(order: Order): Promise<Order> {
+        try {
+            const conn = await client.connect();
+            const { order_status, user_id } = order;
+            const sqlQuery = `INSERT INTO orders (order_status, user_id) VALUES($1, $2) RETURNING *`;
+            const result = await conn.query(sqlQuery, [order_status, user_id])
+            conn.release();
+            return result.rows[0];
 
-//             const { order_date, order_status, order_quantity } = order;
-//             const conn = await client.connect();
+        } catch (err) {
+            throw new Error(`Could not create new order & error= ${err}`)
+        }
+    }
 
-//             const result = await conn
-//                 .query(sqlQuery, [order_date, order_status, order_quantity])
-//             conn.release();
-//             return result.rows[0];
+    async update(order: Order): Promise<Order> {
+        try {
+            const conn = await client.connect();
+            const sqlQuery = `UPDATE orders SET order_status=($1), user_id=($2) WHERE order_id=($3) RETURNING *`
+            const result = await conn.query(sqlQuery, [order.order_status, order.user_id, order.order_id])
+            conn.release()
+            return result.rows[0]
 
-//         } catch (err) {
-//             throw new Error(`Could not create new order & error= ${err}`)
-//         }
-//     }
+        } catch (err) {
+            throw new Error(`Could not update order status & ${err}`)
+        }
+    }
 
-//     async update(order_id: number, order_status: string): Promise<Order> {
-//         try {
-//             const conn = await client.connect()
-//             const sqlQuery = `UPDATE orders SET ostatus=($1) WHERE order_id=($2) RETURNING order_status`
-//             const result = await conn.query(sqlQuery, [order_status, order_id])
-//             conn.release()
-//             return result.rows[0]
-
-//         } catch (err) {
-//             throw new Error(`Could not update order status & ${err}`)
-//         }
-//     }
-
-//     async delete(order_id: number): Promise<Order> {
-//         try {
-//             const connection = await client.connect();
-//             const sqlQuery = 'DELETE FROM orders WHERE id=($1) RETURNING *';
-//             const result = await connection.query(sqlQuery, [order_id]);
-//             connection.release();
-//             return result.rows[0];
-//         } catch (error) {
-//             throw new Error(
-//                 `Failed to delete order of id ${order_id}  & error: ${error}`
-//             );
-//         }
-//     }
+    async delete(order_id: number): Promise<Order> {
+        try {
+            const connection = await client.connect();
+            const sqlQuery = `DELETE FROM orders WHERE order_id=($1) RETURNING *`;
+            const result = await connection.query(sqlQuery, [order_id]);
+            connection.release();
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(
+                `Failed to delete order of id ${order_id}  & error: ${error}`
+            );
+        }
+    }
 
 
-// }
+}
