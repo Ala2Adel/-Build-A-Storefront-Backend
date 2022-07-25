@@ -1,12 +1,12 @@
 import { Order, OrdersModel } from '../../models/order';
-import { User, UsersModel } from '../../models/user';
-import { Product, ProductsModel } from '../../models/product';
-
 
 const ordersModel = new OrdersModel();
-const usersModel = new UsersModel();
-const productsModel = new ProductsModel();
 
+let expectedOrder: Order;
+const testOrder: Order = {
+    order_status: 'active',
+    user_id: 1
+};
 
 describe("Testing order model", () => {
     it('should have an index method', () => {
@@ -27,11 +27,22 @@ describe("Testing order model", () => {
         expect(ordersModel.delete).toBeDefined();
     });
 
-    describe("Testing order methods", () => {
+    it('should CREATE an order using create method', async () => {
+        const result = await ordersModel.create(testOrder);
+        expect({ order_status: result.order_status, user_id: result.user_id }).toEqual({
+            order_status: testOrder.order_status, user_id: testOrder.user_id
+        });
+    });
 
-
+    it('should UPDATE order using update method', async () => {
+        const updatedOrder = await ordersModel.update(expectedOrder);
+        expect(updatedOrder).toEqual(expectedOrder);
     });
 
 
+    it('should DELETE order using delete method', async () => {
+        const deletedOrder = await ordersModel.delete(expectedOrder.order_id as number);
+        expect(deletedOrder.order_id).toEqual(expectedOrder.order_id);
+    });
 
 });

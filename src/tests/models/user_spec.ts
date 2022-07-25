@@ -48,11 +48,10 @@ describe("Testing user model", () => {
     });
 
     it('should UPDATE user using update method', async () => {
-        const id: number = 5;
-        const pass: string = "newPassword";
-        const user = await usersModel.update(id, pass);
+    
+        const user = await usersModel.update(expectedUser.user_id as number, expectedUser.password);
         expect({ user_id: user.user_id, password: user.password }).toEqual({
-            user_id: id, password: pass
+            user_id: expectedUser.user_id, password: expectedUser.password
         });
     });
 
