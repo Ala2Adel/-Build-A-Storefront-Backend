@@ -21,7 +21,7 @@ export class OrdersModel {
         }
     }
 
-    async show(order_id: number): Promise<Order[]> {
+    async show(order_id: number): Promise<Order> {
         try {
             const connection = await client.connect();
             const sqlQuery = 'SELECT * FROM orders WHERE order_id=($1)';

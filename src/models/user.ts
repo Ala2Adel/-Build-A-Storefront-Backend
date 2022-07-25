@@ -1,5 +1,6 @@
 import client from "../database";
 
+// defined fields in db
 export type User = {
     user_id?: number;
     firstName: string,
@@ -22,7 +23,7 @@ export class UsersModel {
         }
     }
 
-    async show(user_id: number): Promise<User[]> {
+    async show(user_id: number): Promise<User> {
         try {
             const connection = await client.connect();
             const sqlQuery = 'SELECT * FROM users WHERE user_id=($1)';
