@@ -18,11 +18,6 @@ const testOrder: Order = {
 };
 
 describe("Testing order model", () => {
-    
-    // afterAll(async () => {
-    //     await usersModel.delete(1);
-    //   });
-
     it('should have an index method', () => {
         expect(ordersModel.index).toBeDefined();
     });
