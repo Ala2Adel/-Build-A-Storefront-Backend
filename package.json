@@ -5,12 +5,13 @@
   "main": "server.ts",
   "scripts": {
     "build": "npx tsc",
+    "jasmine": "jasmine",
     "lint": "eslint src/**/*.ts --fix",
     "pretty": "prettier --config .prettierrc src/**/*.ts --write",
     "start": "nodemon src/server.ts",
     "dev": "tsc && node dist/index.js",
     "watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess \"node ./dist/server.js\"",
-    "migrate": "db-migrate --env test up && db-migrate up",
+    "migrate": "db-migrate --env test up && db-migrate down",
     "test": "tsc && set ENV=test&& db-migrate --env test up && jasmine && db-migrate --env test reset"
   },
   "author": "Alaa Adel",

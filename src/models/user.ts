@@ -3,8 +3,8 @@ import client from "../database";
 // defined fields in db
 export type User = {
     user_id?: number;
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     password: string
 };
 
@@ -40,15 +40,15 @@ export class UsersModel {
     async create(user: User): Promise<User> {
         try {
             const conn = await client.connect();
-            const sqlQuery = `INSERT INTO users (firstName, lastName, password) VALUES($1, $2, $3) RETURNING *`
+            const sqlQuery = `INSERT INTO users (first_name, last_name, password) VALUES($1, $2, $3) RETURNING *`;
 
             const result = await conn
-                .query(sqlQuery, [user.firstName, user.lastName, user.password])
+                .query(sqlQuery, [user.first_name, user.last_name, user.password])
             conn.release();
             return result.rows[0];
 
         } catch (err) {
-            throw new Error(`Could not create new user & error= ${err}`)
+            throw new Error(`Could not create new user & error = ${err}`)
         }
     }
     // update through changing the password
