@@ -1,4 +1,8 @@
 import client from "../database";
+import bcrypt from 'bcrypt';
+
+const pepper = process.env.BCRYPT_PASSWORD;
+const saltRounds = process.env.SALT_ROUNDS as string;;
 
 // defined fields in db
 export type User = {
@@ -42,8 +46,13 @@ export class UsersModel {
             const conn = await client.connect();
             const sqlQuery = `INSERT INTO users (first_name, last_name, password) VALUES($1, $2, $3) RETURNING *`;
 
+            const hashPassCode = bcrypt.hashSync(
+                user.password + pepper,
+                parseInt(saltRounds)
+            )
+
             const result = await conn
-                .query(sqlQuery, [user.first_name, user.last_name, user.password])
+                .query(sqlQuery, [user.first_name, user.last_name, hashPassCode])
             conn.release();
             return result.rows[0];
 
@@ -76,6 +85,28 @@ export class UsersModel {
         } catch (error) {
             throw new Error(
                 `Failed to delete user of id ${user_id}  & error: ${error}`
+            );
+        }
+    }
+
+
+    async authenticate(userName: string, password: string): Promise<User | null> {
+        try {
+            const connection = await client.connect();
+            const sqlQuery = 'SELECT * FROM users WHERE first_name=($1)';
+            const result = await connection.query(sqlQuery, [userName]);
+            connection.release();
+            const authUser = result.rows[0];
+            if (authUser) {
+                if (bcrypt.compareSync(password + pepper, authUser.password)) {
+                    return authUser;
+                }
+            }
+            return null;
+
+        } catch (error) {
+            throw new Error(
+                `Failed to login in as ${userName}  & error: ${error}`
             );
         }
     }
