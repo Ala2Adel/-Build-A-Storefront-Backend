@@ -4,14 +4,14 @@ import { verify, JwtPayload, sign } from 'jsonwebtoken';
 const jwToken = process.env.TOKEN_SECRET as string;
 
 function VerifyUser(req: Request, userId?: number) {
-    const authHeader = req.headers.authorization;
+    const authHeader: string | undefined = req.headers.authorization;
     if (!authHeader) {
         throw new Error('Not Authenticated!')
     }
-    const token = authHeader!.split(' ')[1]; 
-    const decoded = verify(token as string, jwToken) as JwtPayload; 
-    const jwtUserId = decoded.user.id// Return the decoded payload
-    if (userId && jwtUserId != userId) {
+    const token: string = authHeader!.split(' ')[1];
+    const decoded = verify(token as string, jwToken) as JwtPayload;
+    const jwtUserId = decoded.user.user_id; // Return the decoded payload
+    if (userId && jwtUserId as unknown as number != userId) {
 
         throw new Error('Unauthorized Access');
     }

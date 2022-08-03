@@ -151,8 +151,8 @@ const order_routes = (app: express.Application) => {
     app.get('/orders', index);
     app.get('/order/:id', show);
     app.post('/order/new', create);
-    app.put('/orders', update);
-    app.delete('/orders', deleteOrder);
+    app.put('/order/:id', update);
+    app.delete('/order/:id', deleteOrder);
 }
 
 export default order_routes;
