@@ -1,6 +1,6 @@
-import { User, UsersModel } from '../../models/user';
+import { User, UserModel } from '../../models/user';
 
-const usersModel = new UsersModel();
+const usersModel = new UserModel();
 const testUser: User = {
     first_name: 'Alaa',
     last_name: 'Alaraby',

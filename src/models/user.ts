@@ -12,7 +12,7 @@ export type User = {
     password: string
 };
 
-export class UsersModel {
+export class UserModel {
     async index(): Promise<User[]> {
         try {
             const connection = await client.connect();

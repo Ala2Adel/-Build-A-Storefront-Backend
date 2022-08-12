@@ -6,7 +6,7 @@ const jwToken = process.env.TOKEN_SECRET as string;
 function VerifyUser(req: Request, userId?: number) {
     const authHeader: string | undefined = req.headers.authorization;
     if (!authHeader) {
-        throw new Error('Not Authenticated!')
+        throw new Error('Invalid token. Not Authenticated!')
     }
     const token: string = authHeader!.split(' ')[1];
     const decoded = verify(token as string, jwToken) as JwtPayload;
